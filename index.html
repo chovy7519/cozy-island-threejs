@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e8eccb">
+  <meta name="description" content="用 Three.js 复刻 Cozy Island 的低多边形插画风格：正交镜头、色块植被、柔和光影与可交互场景。">
+  <link rel="icon" type="image/png" href="./favicon.png">
+  <title>Cozy Island · Three.js 风格实验室</title>
+  <style>
+    html,body{margin:0;height:100%;background:#e8eccb;color:#293b2b}
+    #loading{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:#e8eccb;font-family:"PingFang SC","Microsoft YaHei",sans-serif}
+  </style>
+</head>
+<body data-mood="day">
+  <main id="scene-host" aria-label="Cozy Island 三维风格演示"></main>
+
+  <header class="brand-panel">
+    <div class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div>
+      <p class="overline">THREE.JS STYLE STUDY</p>
+      <h1>Cozy Island</h1>
+      <p class="brand-subtitle">把低多边形，做出绘本里的温度。</p>
+    </div>
+  </header>
+
+  <nav class="top-actions" aria-label="场景工具">
+    <button id="recipe-button" class="button button-primary" type="button" aria-controls="recipe" aria-expanded="false">风格配方</button>
+    <button id="reset-button" class="button button-quiet" type="button" title="快捷键 R">重置视角</button>
+  </nav>
+
+  <aside id="recipe" class="recipe-panel" aria-label="Three.js 风格配方" aria-hidden="true">
+    <div class="recipe-heading">
+      <div>
+        <p class="overline">STYLE RECIPE</p>
+        <h2>风格不是滤镜，是规则</h2>
+      </div>
+      <button id="recipe-close" class="icon-button" type="button" aria-label="关闭风格配方">×</button>
+    </div>
+    <p class="recipe-intro">参考图的核心是统一的比例、色块和受光。下面五项比堆叠模型面数更重要。</p>
+    <dl class="recipe-list">
+      <div><dt>正交镜头</dt><dd>OrthographicCamera 去掉近大远小，用固定俯视角接近游戏制图画面。</dd></div>
+      <div><dt>圆润切面</dt><dd>Icosahedron、Dodecahedron 配合 flatShading，保留面，但不显尖锐。</dd></div>
+      <div><dt>低饱和色板</dt><dd>黄绿草地、苔绿树冠、粉灰岩石；深色只用于头发与树干。</dd></div>
+      <div><dt>一盏暖主光</dt><dd>Hemisphere 提供环境底色，单个 DirectionalLight 负责柔影与方向。</dd></div>
+      <div><dt>有节制的动</dt><dd>树冠轻摆、角色呼吸、蝴蝶绕行；不要靠复杂后处理抢戏。</dd></div>
+    </dl>
+    <pre class="code-card" aria-label="核心 Three.js 参数"><code>const camera = new THREE.OrthographicCamera(...);
+const material = new THREE.MeshStandardMaterial({
+  roughness: 1,
+  flatShading: true
+});
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;</code></pre>
+    <p class="recipe-footnote">项目中的环境均由函数生成，固定种子让构图可以重复。</p>
+  </aside>
+
+  <section class="scene-caption" aria-label="当前场景">
+    <p class="caption-kicker">林间空地 · 12 秒轻循环</p>
+    <p>拖动旋转 · 滚轮缩放 · 按 R 回家</p>
+  </section>
+
+  <section class="control-dock" aria-label="场景控制">
+    <div class="mood-switch" role="group" aria-label="光照氛围">
+      <button type="button" class="is-active" data-mood-button="day" aria-pressed="true">晴日</button>
+      <button type="button" data-mood-button="sunset" aria-pressed="false">黄昏</button>
+    </div>
+    <span class="dock-divider" aria-hidden="true"></span>
+    <button id="rotate-button" class="dock-button" type="button" aria-pressed="false">自动环绕</button>
+    <button id="pause-button" class="dock-button" type="button" aria-pressed="false">暂停动画</button>
+    <button id="save-button" class="dock-button" type="button">保存画面</button>
+  </section>
+
+  <div class="material-legend" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+    <small>MATTE · FLAT · SOFT</small>
+  </div>
+
+  <div id="loading" role="status" aria-live="polite">
+    <div class="loading-scene" aria-hidden="true">
+      <div class="loading-sun"></div>
+      <div class="loading-tree"><i></i><b></b></div>
+      <div class="loading-hill"></div>
+    </div>
+    <div class="loading-copy">
+      <strong>正在种下一座小岛</strong>
+      <span id="loading-detail">生成树冠、花丛与柔影…</span>
+    </div>
+  </div>
+
+  <script type="module" src="./src/scene.js"></script>
+</body>
+</html>
